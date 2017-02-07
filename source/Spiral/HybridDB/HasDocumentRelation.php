@@ -167,10 +167,8 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
             return $this->instance;
         }
 
-        if (!$this->isLoaded()) {
-            //Lazy loading our relation data
-            $this->loadData();
-        }
+        //Lazy loading our relation data
+        $this->loadData();
 
         if (empty($this->data)) {
             if (!$this->schema[Record::NULLABLE]) {

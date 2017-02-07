@@ -172,10 +172,6 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
             $this->loadData();
         }
 
-        if (!empty($this->instance)) {
-            return $this->instance;
-        }
-
         if (empty($this->data)) {
             if (!$this->schema[Record::NULLABLE]) {
                 //Stub instance

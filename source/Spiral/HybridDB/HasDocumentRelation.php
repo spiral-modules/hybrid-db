@@ -178,6 +178,7 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
                 return $this->instance = $this->odm->make($this->getClass(), [], false);
             }
 
+            //Relation is nullable and no value is presented
             return null;
         }
 

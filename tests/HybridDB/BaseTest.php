@@ -217,7 +217,6 @@ abstract class BaseTest extends TestCase
         $this->odm = $this->container->get(ODMInterface::class);
 
         $builder = $this->odm->schemaBuilder(true);
-
         $this->odm->setSchema($builder);
 
         $builder = $this->orm->schemaBuilder(true);

@@ -21,6 +21,9 @@ class SaveTest extends BaseTest
         $photo->filename = 'filename';
         $photo->save();
 
+        $this->assertNull($photo->metadata);
+        $this->assertInstanceOf(Metadata::class, $photo->notNullable);
+
         $photo = $this->orm->source(Photo::class)->findByPK($photo->primaryKey());
 
         $this->assertSame(100, $photo->filesize);
@@ -48,7 +51,6 @@ class SaveTest extends BaseTest
         $this->assertSame('filename', $photo->filename);
 
         $this->assertFalse(empty($photo->metadata));
-
 
         $this->assertInstanceOf(Metadata::class, $photo->metadata);
         $this->assertSame(['metadata', 'keyword'], $photo->metadata->keywords->packValue());

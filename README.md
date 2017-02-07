@@ -7,3 +7,10 @@ Spiral, ORM-to-ODM relation bridge
 [![Coverage Status](https://coveralls.io/repos/github/spiral-modules/hybrid-db/badge.svg?branch=master)](https://coveralls.io/github/spiral-modules/hybrid-db?branch=master)
 
 <b>[Documentation](http://spiral-framework.com/guide)</b> | [CHANGELOG](/CHANGELOG.md)
+
+Installation
+------------
+```
+composer require spiral/hybrid-db
+./spiral register spiral/hybrid-db
+```

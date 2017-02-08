@@ -285,10 +285,13 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
                         $this->instance->delete();
                     }
                 } else {
+                    $data = $this->data;
+                    unset($data['_id']);
+
                     //Restoring original state
                     $this->odm->collection($this->class)->updateOne(
                         ['_id' => $this->data['_id']],
-                        ['$set' => $this->data]
+                        ['$set' => $data]
                     );
                 }
             } elseif (!empty($this->instance)) {

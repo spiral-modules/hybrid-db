@@ -78,16 +78,8 @@ class HasDocumentLoader extends Component implements LoaderInterface
      */
     public function withContext(LoaderInterface $parent, array $options = []): LoaderInterface
     {
-        /*
-         * This scary construction simply checks if input array has keys which do not present in a
-         * current set of options (i.e. default options, i.e. current options).
-         */
-        if (!empty($wrong = array_diff(array_keys($options), array_keys($this->options)))) {
-            throw new LoaderException(sprintf(
-                "Relation %s does not support option: %s",
-                get_class($this),
-                join(',', $wrong)
-            ));
+        if (!empty($options)) {
+            throw new LoaderException("HasDocumentLoader does not support any options");
         }
 
         $loader = clone $this;

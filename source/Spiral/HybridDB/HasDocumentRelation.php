@@ -145,7 +145,7 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
     public function setRelated($value)
     {
         if (is_null($value) && !$this->schema[Record::NULLABLE]) {
-            throw new RelationException("Unable to set null value for non nullable relation");
+            throw new RelationException("Relation is not nullable");
         }
 
         if (!is_null($value) && !$value instanceof $this->class) {

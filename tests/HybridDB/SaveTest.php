@@ -86,4 +86,25 @@ class SaveTest extends BaseTest
         $this->assertSame(['metadata', 'keyword'], $photo->metadata->keywords->packValue());
         $this->assertSame(['some' => 'value'], $photo->metadata->iptc);
     }
+
+    /**
+     * @expectedException \Spiral\ORM\Exceptions\RelationException
+     * @expectedExceptionMessage Relation is not nullable
+     */
+    public function testSetNullWhenNotNull()
+    {
+        /** @var Photo $photo */
+        $photo = $this->orm->make(Photo::class);
+        $photo->notNullable = null;
+    }
+
+    /**
+     * @expectedException \Spiral\ORM\Exceptions\RelationException
+     */
+    public function testCheckInvalidType()
+    {
+        /** @var Photo $photo */
+        $photo = $this->orm->make(Photo::class);
+        $photo->metadata = $this->orm->make(Photo::class);
+    }
 }

@@ -40,6 +40,35 @@ class LoadingTest extends BaseTest
         $this->assertSame(2, $count);
     }
 
+    public function testLoadButNoParents()
+    {
+        /** @var Photo $photo */
+        $photo = $this->orm->make(Photo::class);
+        $photo->filesize = 100;
+        $photo->filename = 'filename';
+        $photo->save();
+
+        /** @var Photo $photo */
+        $photo = $this->orm->make(Photo::class);
+        $photo->filesize = 200;
+        $photo->filename = 'filename';
+        $photo->save();
+
+        $selector = $this->orm->selector(Photo::class)
+            ->where('filesize', 300)
+            ->load('metadata');
+
+        $count = 0;
+        foreach ($selector as $photo) {
+            $this->assertTrue(empty($photo->metadata));
+            $this->assertNull($photo->metadata);
+
+            $count++;
+        }
+
+        $this->assertSame(0, $count);
+    }
+
     public function testLoadButWithRelated()
     {
         /** @var Photo $photo */

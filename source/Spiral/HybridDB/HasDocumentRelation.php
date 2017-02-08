@@ -191,6 +191,7 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
     {
         $command = new CallbackCommand(function () use ($parentCommand) {
             if (!empty($this->instance)) {
+                //Populating FK value
                 $this->instance->setField(
                     $this->key(Record::OUTER_KEY),
                     $this->lookupKey(Record::INNER_KEY, $this->parent, $parentCommand)
@@ -205,37 +206,15 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
                     ]);
                 }
             } elseif (!empty($this->data)) {
-                //Association removed
+                //Remove previously associated instance
                 $this->odm->collection($this->class)->deleteOne([
                     '_id' => $this->data['_id']
                 ]);
             }
         });
 
-        //Revert state
-        $command->onRollBack(function () {
-            if (!empty($this->data)) {
-                if ($this->data['_id'] != $this->instance->primaryKey()) {
-                    //Restore original document
-                    $this->odm->collection($this->class)->insertOne($this->data);
-                } else {
-                    //Restoring original state
-                    $this->odm->collection($this->class)->updateOne(
-                        ['_id' => $this->data['_id']],
-                        ['$set' => $this->data]
-                    );
-                }
-            } elseif (!empty($this->instance)) {
-                //Delete newly created instance
-                $this->instance->delete();
-            }
-        });
-
-        //Finish sync
-        $command->onComplete(function () {
-            //Flush relation status
-            $this->data = !empty($this->instance) ? $this->instance->packValue(true) : [];
-        });
+        $command->onRollBack($this->handleRollback());
+        $command->onComplete($this->handleComplete());
 
         return $command;
     }
@@ -287,5 +266,46 @@ class HasDocumentRelation implements \Spiral\ORM\RelationInterface
     protected function primaryColumnOf(RecordInterface $record): string
     {
         return $this->orm->define(get_class($record), ORMInterface::R_PRIMARY_KEY);
+    }
+
+    /**
+     * @return \Closure
+     */
+    protected function handleRollback(): \Closure
+    {
+        return function () {
+            //Had previous document version
+            if (!empty($this->data)) {
+                if (empty($this->instance) || $this->data['_id'] != $this->instance->primaryKey()) {
+                    //Restore original document
+                    $this->odm->collection($this->class)->insertOne($this->data);
+
+                    if (!empty($this->instance)) {
+                        //Delete newly created instance
+                        $this->instance->delete();
+                    }
+                } else {
+                    //Restoring original state
+                    $this->odm->collection($this->class)->updateOne(
+                        ['_id' => $this->data['_id']],
+                        ['$set' => $this->data]
+                    );
+                }
+            } elseif (!empty($this->instance)) {
+                //Delete newly created instance
+                $this->instance->delete();
+            }
+        };
+    }
+
+    /**
+     * @return \Closure
+     */
+    protected function handleComplete(): \Closure
+    {
+        return function () {
+            //Flush relation status
+            $this->data = !empty($this->instance) ? $this->instance->packValue(true) : [];
+        };
     }
 }

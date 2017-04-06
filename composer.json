@@ -11,9 +11,9 @@
   ],
   "require": {
     "php": ">=7.0",
-    "spiral/orm": "^0.9",
-    "spiral/odm": "^0.9",
-    "spiral/framework": "^0.9"
+    "spiral/orm": "^1.0",
+    "spiral/odm": "^1.0",
+    "spiral/framework": "^1.0"
   },
   "require-dev": {
     "phpunit/phpunit": "~6.0",
